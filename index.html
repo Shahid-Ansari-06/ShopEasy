@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy - Your Online Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="#">ShopEasy</a>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search products...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#" class="account-link"><i class="fas fa-user"></i> <span class="nav-text">Account</span></a></li>
+                    <li><a href="#" class="wishlist-link"><i class="fas fa-heart"></i> <span class="nav-text">Wishlist</span> <span id="wishlist-count">0</span></a></li>
+                    <li><a href="#" id="cart-btn"><i class="fas fa-shopping-cart"></i> <span class="nav-text">Cart</span> <span id="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <ul>
+                <li><a href="#" class="account-link"><i class="fas fa-user"></i> Account</a></li>
+                <li><a href="#" class="wishlist-link"><i class="fas fa-heart"></i> Wishlist <span id="mobile-wishlist-count">0</span></a></li>
+                <li><a href="#" id="mobile-cart-btn"><i class="fas fa-shopping-cart"></i> Cart <span id="mobile-cart-count">0</span></a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Banner Section -->
+    <section class="banner">
+        <div class="container">
+            <div class="banner-content">
+                <h1>Summer Sale</h1>
+                <p>Up to 50% off on selected items</p>
+                <a href="#" class="btn">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Product Sections -->
+        <section class="products-container">
+            <!-- Featured Products -->
+            <section class="products">
+                <div class="products-header">
+                    <h2>Featured Products</h2>
+                    <div class="sort-options">
+                        <select id="sort-by">
+                            <option value="default">Sort By</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Rating</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="product-grid" id="product-grid">
+                    <!-- Products will be dynamically inserted here -->
+                </div>
+                <div class="search-results" id="search-results" style="display: none;">
+                    <h3>Search Results</h3>
+                    <div class="product-grid" id="search-results-grid"></div>
+                </div>
+            </section>
+
+            <!-- Trending Now -->
+            <section class="products">
+                <div class="products-header">
+                    <h2>Trending Now</h2>
+                    <a href="#trending" class="view-all" id="view-all-trending">View All</a>
+                </div>
+                <div class="product-grid" id="trending-grid">
+                    <!-- Trending products will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Today's Deals -->
+            <section class="products">
+                <div class="products-header">
+                    <h2>Today's Deals</h2>
+                    <div class="deals-countdown">
+                        <span>Ends in:</span>
+                        <span id="countdown">23:59:59</span>
+                    </div>
+                </div>
+                <div class="product-grid" id="deals-grid">
+                    <!-- Deal products will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Recommended For You -->
+            <section class="products">
+                <div class="products-header">
+                    <h2>Recommended For You</h2>
+                    <a href="#recommended" class="view-all" id="view-all-recommended">View All</a>
+                </div>
+                <div class="product-grid" id="recommended-grid">
+                    <!-- Recommended products will be dynamically inserted here -->
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Your Cart</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span id="cart-shipping">$0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="wishlist-modal" id="wishlist-modal">
+        <div class="wishlist-content">
+            <div class="wishlist-header">
+                <h3>Your Wishlist</h3>
+                <span class="close-wishlist">&times;</span>
+            </div>
+            <div class="wishlist-items" id="wishlist-items">
+                <!-- Wishlist items will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-section">
+                <h4>ShopEasy</h4>
+                <p>Your one-stop shop for all your needs.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 ShopEasy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
