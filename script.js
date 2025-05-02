@@ -182,6 +182,7 @@ const recommendedGrid = document.getElementById('recommended-grid');
 const searchResults = document.getElementById('search-results');
 const searchResultsGrid = document.getElementById('search-results-grid');
 const cartBtn = document.getElementById('cart-btn');
+const mobileCartBtn = document.getElementById('mobile-cart-btn');
 const wishlistLink = document.querySelector('.wishlist-link');
 const cartModal = document.getElementById('cart-modal');
 const wishlistModal = document.getElementById('wishlist-modal');
@@ -194,11 +195,15 @@ const wishlistItems = document.getElementById('wishlist-items');
 const productViewContainer = document.getElementById('product-view-container');
 const cartCount = document.getElementById('cart-count');
 const wishlistCount = document.getElementById('wishlist-count');
+const mobileCartCount = document.getElementById('mobile-cart-count');
+const mobileWishlistCount = document.getElementById('mobile-wishlist-count');
 const cartSubtotal = document.getElementById('cart-subtotal');
 const cartTotal = document.getElementById('cart-total');
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
 const sortBy = document.getElementById('sort-by');
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
 const countdown = document.getElementById('countdown');
 const viewAllTrending = document.getElementById('view-all-trending');
 const viewAllRecommended = document.getElementById('view-all-recommended');
@@ -315,34 +320,6 @@ function sortProducts() {
     displayProducts(productsToSort);
     searchResults.style.display = 'none';
 }
-
-//for featured today
-
-const carousel = document.querySelector('.carousel');
-const items = document.querySelectorAll('.carousel-item');
-const dots = document.querySelectorAll('.dot');
-
-let currentIndex = 0;
-
-function showSlide(index) {
-    items.forEach((item, idx) => {
-        item.style.transform = `translateX(-${index * 100}%)`;
-        dots[idx].classList.remove('active');
-    });
-    dots[index].classList.add('active');
-}
-
-dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        currentIndex = index;
-        showSlide(currentIndex);
-    });
-});
-
-setInterval(() => {
-    currentIndex = (currentIndex + 1) % items.length;
-    showSlide(currentIndex);
-}, 5000);
 
 // Search Products
 function searchProducts() {
@@ -666,6 +643,12 @@ function closeWishlistModal() {
     document.body.style.overflow = 'auto';
 }
 
+// Toggle Mobile Menu
+function toggleMobileMenu(e) {
+    e.preventDefault();
+    mobileMenu.classList.toggle('active');
+}
+
 // Update Countdown Timer
 function updateCountdown() {
     const now = new Date();
@@ -731,6 +714,7 @@ function init() {
     window.addEventListener('click', (e) => {
         if (e.target === cartModal) closeCartModal();
         if (e.target === wishlistModal) closeWishlistModal();
+        if (e.target === productViewModal) closeProductViewModal();
     });
     
     // Countdown timer
