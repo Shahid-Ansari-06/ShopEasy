@@ -321,6 +321,34 @@ function sortProducts() {
     searchResults.style.display = 'none';
 }
 
+//for featured today
+
+const carousel = document.querySelector('.carousel');
+const items = document.querySelectorAll('.carousel-item');
+const dots = document.querySelectorAll('.dot');
+
+let currentIndex = 0;
+
+function showSlide(index) {
+    items.forEach((item, idx) => {
+        item.style.transform = `translateX(-${index * 100}%)`;
+        dots[idx].classList.remove('active');
+    });
+    dots[index].classList.add('active');
+}
+
+dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        currentIndex = index;
+        showSlide(currentIndex);
+    });
+});
+
+setInterval(() => {
+    currentIndex = (currentIndex + 1) % items.length;
+    showSlide(currentIndex);
+}, 5000);
+
 // Search Products
 function searchProducts() {
     const query = searchInput.value.trim().toLowerCase();
