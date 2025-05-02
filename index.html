@@ -17,7 +17,12 @@
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="Search products...">
                 <button id="search-btn"><i class="fas fa-search"></i></button>
-            </div>
+                <button id="clear-search-btn" style="display:none; margin-left: -3px;"><i class="fas fa-times"></i></button>
+              </div>
+              
+              <div class="live-search-results" id="live-search-results">
+                <div class="results-container" id="results-container"></div>
+              </div>
             <nav class="nav">
                 <ul>
                     <li><a href="about-us.html" class="account-link"><i class="fas fa-user"></i> <span class="nav-text">About Us</span></a></li>
@@ -194,6 +199,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
