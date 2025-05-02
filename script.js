@@ -182,7 +182,6 @@ const recommendedGrid = document.getElementById('recommended-grid');
 const searchResults = document.getElementById('search-results');
 const searchResultsGrid = document.getElementById('search-results-grid');
 const cartBtn = document.getElementById('cart-btn');
-const mobileCartBtn = document.getElementById('mobile-cart-btn');
 const wishlistLink = document.querySelector('.wishlist-link');
 const cartModal = document.getElementById('cart-modal');
 const wishlistModal = document.getElementById('wishlist-modal');
@@ -195,15 +194,11 @@ const wishlistItems = document.getElementById('wishlist-items');
 const productViewContainer = document.getElementById('product-view-container');
 const cartCount = document.getElementById('cart-count');
 const wishlistCount = document.getElementById('wishlist-count');
-const mobileCartCount = document.getElementById('mobile-cart-count');
-const mobileWishlistCount = document.getElementById('mobile-wishlist-count');
 const cartSubtotal = document.getElementById('cart-subtotal');
 const cartTotal = document.getElementById('cart-total');
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
 const sortBy = document.getElementById('sort-by');
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobile-menu');
 const countdown = document.getElementById('countdown');
 const viewAllTrending = document.getElementById('view-all-trending');
 const viewAllRecommended = document.getElementById('view-all-recommended');
@@ -570,14 +565,12 @@ function removeFromWishlist(e) {
 function updateCartCount() {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = count;
-    mobileCartCount.textContent = count;
 }
 
 // Update Wishlist Count
 function updateWishlistCount() {
     const count = wishlist.length;
     wishlistCount.textContent = count;
-    mobileWishlistCount.textContent = count;
 }
 
 // Decrease Quantity
@@ -647,7 +640,6 @@ function openCartModal(e) {
     e.preventDefault();
     cartModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    mobileMenu.classList.remove('active');
 }
 
 // Close Cart Modal
@@ -661,7 +653,6 @@ function openWishlistModal(e) {
     e.preventDefault();
     wishlistModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    mobileMenu.classList.remove('active');
     updateWishlist();
 }
 
@@ -669,12 +660,6 @@ function openWishlistModal(e) {
 function closeWishlistModal() {
     wishlistModal.style.display = 'none';
     document.body.style.overflow = 'auto';
-}
-
-// Toggle Mobile Menu
-function toggleMobileMenu(e) {
-    e.preventDefault();
-    mobileMenu.classList.toggle('active');
 }
 
 // Update Countdown Timer
@@ -720,14 +705,11 @@ function init() {
     sortBy.addEventListener('change', sortProducts);
     
     cartBtn.addEventListener('click', openCartModal);
-    mobileCartBtn.addEventListener('click', openCartModal);
     closeBtn.addEventListener('click', closeCartModal);
     
     wishlistLink.addEventListener('click', openWishlistModal);
     closeWishlist.addEventListener('click', closeWishlistModal);
-        
-    hamburger.addEventListener('click', toggleMobileMenu);
-    
+            
     viewAllTrending.addEventListener('click', (e) => {
         e.preventDefault();
         displayAllTrendingProducts();
@@ -742,7 +724,6 @@ function init() {
     window.addEventListener('click', (e) => {
         if (e.target === cartModal) closeCartModal();
         if (e.target === wishlistModal) closeWishlistModal();
-        if (e.target === productViewModal) closeProductViewModal();
     });
     
     // Countdown timer
