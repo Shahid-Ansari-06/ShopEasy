@@ -335,7 +335,13 @@ button {
 
 /* Banner Styles */
 @media (min-width: 768px) {
-    .mobile-screen {
+    .mobile-image {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .desktop-image {
         display: none;
     }
 }
