@@ -225,6 +225,9 @@ function displayProducts(productsToDisplay, gridElement = productGrid, maxProduc
   const products = maxProducts ? productsToDisplay.slice(0, maxProducts) : productsToDisplay;
 
   products.forEach(product => {
+      // Skip invalid products
+      if (!product || !product.id) return;
+
       const isInWishlist = wishlist.some(item => item.id === product.id);
       const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
       
@@ -368,7 +371,7 @@ setInterval(() => {
 // DOM Elements
 const liveResults = document.getElementById('live-search-results');
 const resultsContainer = document.getElementById('results-container');
-const clearSearchBtn = document.getElementById('clear-search-btn'); // Add this button in HTML
+const clearSearchBtn = document.getElementById('clear-search-btn');
 
 // Data
 let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
@@ -555,7 +558,7 @@ function showSuggestions() {
   
   html += `
     <div class="suggestions-section">
-      <h4>Trending Now</h4>
+      <h4>Trending Searches...</h4>
       <div class="suggestions-list">
         ${trendingSearches.map(term => `
           <div class="suggestion-item trending-search" data-term="${term}">
