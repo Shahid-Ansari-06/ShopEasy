@@ -11,7 +11,8 @@ const products = [
         reviews: 125,
         badge: "Popular",
         category: "electronics",
-        trending: true,
+        featured: true,
+        trending: false,
         deal: false,
         link: "#"
     },
@@ -26,8 +27,9 @@ const products = [
         reviews: 89,
         badge: "Sale",
         category: "electronics",
-        trending: true,
-        deal: true,
+        featured: true,
+        trending: false,
+        deal: false,
         link: "#"
     },
     {
@@ -39,6 +41,7 @@ const products = [
         rating: 4.7,
         reviews: 210,
         category: "electronics",
+        featured: true,
         trending: false,
         deal: false,
         link: "#"
@@ -54,6 +57,7 @@ const products = [
         reviews: 56,
         badge: "Best Seller",
         category: "electronics",
+        featured: false,
         trending: true,
         deal: false,
         link: "#"
@@ -67,6 +71,7 @@ const products = [
         rating: 4.3,
         reviews: 178,
         category: "electronics",
+        featured: false,
         trending: false,
         deal: true,
         link: "#"
@@ -82,8 +87,9 @@ const products = [
         reviews: 92,
         badge: "New",
         category: "electronics",
+        featured: false,
         trending: false,
-        deal: false,
+        deal: true,
         link: "#"
     },
     {
@@ -95,6 +101,7 @@ const products = [
         rating: 4.9,
         reviews: 312,
         category: "electronics",
+        featured: false,
         trending: true,
         deal: false,
         link: "#"
@@ -109,6 +116,7 @@ const products = [
         rating: 4.4,
         reviews: 67,
         category: "electronics",
+        featured: false,
         trending: false,
         deal: true,
         link: "#"
@@ -122,6 +130,7 @@ const products = [
         rating: 4.1,
         reviews: 45,
         category: "clothing",
+        featured: true,
         trending: false,
         deal: false,
         link: "#"
@@ -136,7 +145,8 @@ const products = [
         rating: 4.6,
         reviews: 132,
         category: "clothing",
-        trending: true,
+        featured: false,
+        trending: false,
         deal: true,
         link: "#"
     },
@@ -149,7 +159,8 @@ const products = [
         rating: 4.0,
         reviews: 78,
         category: "home",
-        trending: false,
+        featured: false,
+        trending: true,
         deal: false,
         link: "#"
     },
@@ -162,7 +173,8 @@ const products = [
         rating: 4.3,
         reviews: 56,
         category: "beauty",
-        trending: false,
+        featured: false,
+        trending: true,
         deal: false,
         link: "#"
     }
@@ -176,6 +188,7 @@ let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
 // DOM Elements
 const productGrid = document.getElementById('product-grid');
+const featuredGrid = document.getElementById('featured-grid');
 const trendingGrid = document.getElementById('trending-grid');
 const dealsGrid = document.getElementById('deals-grid');
 const recommendedGrid = document.getElementById('recommended-grid');
@@ -205,60 +218,68 @@ const viewAllRecommended = document.getElementById('view-all-recommended');
 
 
 // Display Products with cart icon and buy now button
-function displayProducts(productsToDisplay, gridElement = productGrid) {
-    gridElement.innerHTML = '';
-    
-    productsToDisplay.forEach(product => {
-        const isInWishlist = wishlist.some(item => item.id === product.id);
-        const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
-        
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card';
-        productCard.innerHTML = `
-            <div class="product-image">
-                <img src="${product.image}" alt="${product.title}">
-                ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
-            </div>
-            <div class="product-info">
-                <h3 class="product-title">${product.title}</h3>
-                <div class="product-price">
-                    <span class="current-price">$${product.price.toFixed(2)}</span>
-                    ${product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
-                    <h4 class="discounts">${product.discount}</h4>
-                    </div>
-                <div class="product-rating">
-                    <span class="stars">${stars}</span>
-                    <span class="rating-count">(${product.reviews})</span>
-                </div>
-                <div class="product-actions">
-                    <a href="${product.link}" class="buy-now-btn">Buy Now</a>
-                    <button class="cart-icon-btn" data-id="${product.id}">
-                        <i class="fas fa-shopping-cart"></i>
-                    </button>
-                    <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" data-id="${product.id}">
-                        <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        gridElement.appendChild(productCard);
-    });
-    // Add event listeners
-    document.querySelectorAll('.cart-icon-btn').forEach(button => {
-        button.addEventListener('click', addToCart);
-    });
-    
-     // Add event listeners to wishlist buttons
-     document.querySelectorAll('.wishlist-btn').forEach(button => {
-        button.addEventListener('click', toggleWishlist);
-    });
+function displayProducts(productsToDisplay, gridElement = productGrid, maxProducts = 10) {
+  gridElement.innerHTML = '';
+  
+  // Limit the number of products if maxProducts is provided
+  const products = maxProducts ? productsToDisplay.slice(0, maxProducts) : productsToDisplay;
+
+  products.forEach(product => {
+      const isInWishlist = wishlist.some(item => item.id === product.id);
+      const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
+      
+      const productCard = document.createElement('div');
+      productCard.className = 'product-card';
+      productCard.innerHTML = `
+          <div class="product-image">
+              <img src="${product.image}" alt="${product.title}">
+              ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
+          </div>
+          <div class="product-info">
+              <h3 class="product-title">${product.title}</h3>
+              <div class="product-price">
+                  <span class="current-price">$${product.price.toFixed(2)}</span>
+                  ${product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
+                  <h4 class="discounts">${product.discount}</h4>
+              </div>
+              <div class="product-rating">
+                  <span class="stars">${stars}</span>
+                  <span class="rating-count">(${product.reviews})</span>
+              </div>
+              <div class="product-actions">
+                  <a href="${product.link}" class="buy-now-btn">Buy Now</a>
+                  <button class="cart-icon-btn" data-id="${product.id}">
+                      <i class="fas fa-shopping-cart"></i>
+                  </button>
+                  <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" data-id="${product.id}">
+                      <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                  </button>
+              </div>
+          </div>
+      `;
+      
+      gridElement.appendChild(productCard);
+  });
+
+  // Add event listeners
+  document.querySelectorAll('.cart-icon-btn').forEach(button => {
+      button.addEventListener('click', addToCart);
+  });
+  
+  document.querySelectorAll('.wishlist-btn').forEach(button => {
+      button.addEventListener('click', toggleWishlist);
+  });
 }
+
+// Display Featured Products
+const featuredProducts = [...products]
+.filter(product => product.featured)
+displayProducts(featuredProducts, featuredGrid);
 
 // Display Trending Products
 function displayTrendingProducts() {
     const trendingProducts = products.filter(product => product.trending);
-    displayProducts(trendingProducts.slice(0, 4), trendingGrid);
+    displayProducts(trendingProducts.slice(0, 5), trendingGrid);
 }
 
 // Display All Trending Products
@@ -271,14 +292,14 @@ function displayAllTrendingProducts() {
 // Display Deal Products
 function displayDealProducts() {
     const dealProducts = products.filter(product => product.deal);
-    displayProducts(dealProducts.slice(0, 4), dealsGrid);
+    displayProducts(dealProducts.slice(0, 5), dealsGrid);
 }
 
 // Display Recommended Products
 function displayRecommendedProducts() {
     const recommendedProducts = [...products]
         .sort(() => 0.5 - Math.random())
-        .slice(0, 4);
+        .slice(0, 5);
     displayProducts(recommendedProducts, recommendedGrid);
 }
 
@@ -313,11 +334,9 @@ function sortProducts() {
     }
     
     displayProducts(productsToSort);
-    searchResults.style.display = 'none';
 }
 
-//for featured today
-
+// For Carousel
 const carousel = document.querySelector('.carousel');
 const items = document.querySelectorAll('.carousel-item');
 const dots = document.querySelectorAll('.dot');
@@ -344,30 +363,345 @@ setInterval(() => {
     showSlide(currentIndex);
 }, 5000);
 
-// Search Products
-function searchProducts() {
-    const query = searchInput.value.trim().toLowerCase();
-    
-    if (query === '') {
-        searchResults.style.display = 'none';
-        productGrid.style.display = 'grid';
-        return;
-    }
-    
-    const results = products.filter(product => 
-        product.title.toLowerCase().includes(query)
-    );
-    
-    if (results.length > 0) {
-        displayProducts(results, searchResultsGrid);
-        searchResults.style.display = 'block';
-        productGrid.style.display = 'none';
-    } else {
-        searchResultsGrid.innerHTML = '<p class="empty-cart">No products found</p>';
-        searchResults.style.display = 'block';
-        productGrid.style.display = 'none';
-    }
+// ========== LIVE SEARCH WITH RECENT & TRENDING SEARCHES ========== //
+
+// DOM Elements
+const liveResults = document.getElementById('live-search-results');
+const resultsContainer = document.getElementById('results-container');
+const clearSearchBtn = document.getElementById('clear-search-btn'); // Add this button in HTML
+
+// Data
+let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+const trendingSearches = ["headphones", "watches", "shoes"];
+
+// Configuration
+const config = {
+  maxRecentSearches: 5,
+  minSearchLength: 2,
+  debounceDelay: 300
+};
+
+// Initialize
+function initSearch() {
+  loadRecentSearches();
+  setupEventListeners();
 }
+
+// Event Listeners
+function setupEventListeners() {
+  // Live search with debouncing
+  searchInput.addEventListener('input', debounce(handleSearchInput, config.debounceDelay));
+  
+  // Focus shows recent/trending searches
+  searchInput.addEventListener('focus', showSuggestions);
+  
+  // Click outside closes results
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !liveResults.contains(e.target)) {
+      liveResults.style.display = 'none';
+    }
+  });
+  
+  // Keyboard navigation
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') liveResults.style.display = 'none';
+    if (e.key === 'Enter') performFullSearch(searchInput.value);
+  });
+  
+  // Clear search button
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener('click', clearSearch);
+  }
+}
+
+// Debounce function
+function debounce(func, delay) {
+  let timeout;
+  return function() {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), delay);
+  };
+}
+
+// Handle search input
+function handleSearchInput(e) {
+  const query = e.target.value.trim();
+  
+  // Show/hide clear button
+  if (clearSearchBtn) {
+    clearSearchBtn.style.display = query ? 'block' : 'none';
+  }
+  
+  if (query.length >= config.minSearchLength) {
+    performLiveSearch(query);
+  } else if (query.length === 0) {
+    showSuggestions();
+  } else {
+    liveResults.style.display = 'none';
+  }
+}
+
+// Perform live search
+function performLiveSearch(query) {
+  showLoadingState();
+  
+  // Simulate API call (replace with actual fetch)
+  setTimeout(() => {
+    const results = searchProducts(query);
+    displaySearchResults(results, query);
+    liveResults.style.display = 'block';
+  }, 200);
+}
+
+// Full search (when pressing Enter)
+function performFullSearch(query) {
+  if (query.length === 0) return;
+  
+  addToRecentSearches(query);
+  // Implement your full search functionality here
+  console.log("Performing full search for:", query);
+  liveResults.style.display = 'none';
+}
+
+// Search products
+function searchProducts(query) {
+  query = query.toLowerCase();
+  return products.filter(product => 
+    product.title.toLowerCase().includes(query) || 
+    product.category.toLowerCase().includes(query) ||
+    product.brand?.toLowerCase().includes(query)
+  );
+}
+
+// Display search results
+function displaySearchResults(results, query) {
+  if (results.length === 0) {
+    showNoResults(query);
+    return;
+  }
+  
+  const categories = groupByCategory(results);
+  let html = '';
+  
+  Object.entries(categories).forEach(([category, items]) => {
+    html += `
+      <div class="search-result-category">
+        <h4>${capitalize(category)}</h4>
+        ${renderCategoryItems(items.slice(0, 3), query)}
+        ${items.length > 3 ? renderViewAllButton(category, query, items.length) : ''}
+      </div>
+    `;
+  });
+  
+  resultsContainer.innerHTML = html;
+  setupResultItemListeners();
+}
+
+// Group products by category
+function groupByCategory(products) {
+  return products.reduce((acc, product) => {
+    if (!acc[product.category]) acc[product.category] = [];
+    acc[product.category].push(product);
+    return acc;
+  }, {});
+}
+
+// Render category items
+function renderCategoryItems(items, query) {
+  return items.map(item => `
+    <div class="search-result-item" data-id="${item.id}">
+      <img src="${item.image}" alt="${item.title}" loading="lazy">
+      <div class="search-result-details">
+        <h5>${highlightMatch(item.title, query)}</h5>
+        <div class="price">$${item.price.toFixed(2)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Render View All button
+function renderViewAllButton(category, query, count) {
+  return `
+    <div class="view-all-results" 
+         data-category="${category.toLowerCase()}" 
+         data-query="${query.toLowerCase()}">
+      View all ${count} ${category} items <i class="fas fa-chevron-right"></i>
+    </div>
+  `;
+}
+
+// Show suggestions (recent + trending)
+function showSuggestions() {
+  let html = '';
+  
+  if (recentSearches.length > 0) {
+    html += `
+      <div class="suggestions-section">
+        <h4>Recent Searches</h4>
+        <div class="suggestions-list">
+          ${recentSearches.map(term => `
+            <div class="suggestion-item recent-search" data-term="${term}">
+              <i class="far fa-clock"></i>
+              <span>${term}</span>
+              <button class="remove-search" data-term="${term}">&times;</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  html += `
+    <div class="suggestions-section">
+      <h4>Trending Now</h4>
+      <div class="suggestions-list">
+        ${trendingSearches.map(term => `
+          <div class="suggestion-item trending-search" data-term="${term}">
+            <i class="fas fa-fire"></i>
+            <span>${capitalize(term)}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  resultsContainer.innerHTML = html;
+  liveResults.style.display = 'block';
+  
+  // Setup suggestion listeners
+  document.querySelectorAll('.recent-search, .trending-search').forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('remove-search')) {
+        const term = item.dataset.term;
+        searchInput.value = term;
+        performLiveSearch(term);
+      }
+    });
+  });
+  
+  // Remove recent search
+  document.querySelectorAll('.remove-search').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeRecentSearch(btn.dataset.term);
+    });
+  });
+}
+
+// Recent searches management
+function addToRecentSearches(term) {
+  term = term.trim().toLowerCase();
+  if (!term) return;
+  
+  // Remove if already exists
+  recentSearches = recentSearches.filter(t => t.toLowerCase() !== term);
+  
+  // Add to beginning
+  recentSearches.unshift(term);
+  
+  // Limit to max items
+  if (recentSearches.length > config.maxRecentSearches) {
+    recentSearches.pop();
+  }
+  
+  saveRecentSearches();
+}
+
+function removeRecentSearch(term) {
+  recentSearches = recentSearches.filter(t => t.toLowerCase() !== term.toLowerCase());
+  saveRecentSearches();
+  showSuggestions();
+}
+
+function saveRecentSearches() {
+  localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+}
+
+function loadRecentSearches() {
+  recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+}
+
+// Helper functions
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function showLoadingState() {
+  resultsContainer.innerHTML = `
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Searching...</span>
+    </div>
+  `;
+  liveResults.style.display = 'block';
+}
+
+function showNoResults(query) {
+  resultsContainer.innerHTML = `
+    <div class="no-results">
+      <i class="far fa-frown"></i>
+      <p>No results found for "${query}"</p>
+      <p class="suggestion">Try different keywords</p>
+    </div>
+  `;
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  clearSearchBtn.style.display = 'none';
+  showSuggestions();
+}
+
+// Setup result item click listeners
+function setupResultItemListeners() {
+  document.querySelectorAll('.search-result-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const productId = item.dataset.id;
+      const product = products.find(p => p.id == productId);
+      addToRecentSearches(product.title);
+      window.location.href = product.link || '#';
+    });
+  });
+  
+  document.querySelectorAll('.view-all-results').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const category = btn.dataset.category;
+      const query = btn.dataset.query;
+      
+      // Filter products by category and query
+      const filteredProducts = products.filter(p => 
+        p.category.toLowerCase() === category && 
+        (p.title.toLowerCase().includes(query) || 
+         p.category.toLowerCase().includes(query))
+      );
+      
+      // Display in main grid
+      displayProducts(filteredProducts);
+      liveResults.style.display = 'none';
+      
+      // Scroll to products
+      document.querySelector('.products-container').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initSearch);
 
 // Add to Cart
 function addToCart(e) {
@@ -441,21 +775,21 @@ function updateCart() {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
             
-            cartItem.innerHTML = `
+        cartItem.innerHTML = `
                 <div class="cart-item-img">
                     <img src="${item.image}" alt="${item.title}">
                 </div>
                 <div class="cart-item-details">
-                    <h4 class="cart-item-title">${item.title}</h4>
-                    <p class="cart-item-price">$${item.price.toFixed(2)}</p>
-                    <div class="cart-item-actions">
-                        <div class="quantity-control">
-                            <button class="quantity-btn minus" data-id="${item.id}">-</button>
-                            <span class="quantity-value">${item.quantity}</span>
-                            <button class="quantity-btn plus" data-id="${item.id}">+</button>
-                        </div>
-                        <span class="remove-item" data-id="${item.id}">Remove</span>
-                    </div>
+                <h4 class="cart-item-title">${item.title}</h4>
+                <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                <div class="cart-item-actions">
+                <div class="quantity-control">
+                <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                <span class="quantity-value">${item.quantity}</span>
+                <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                </div>
+                <span class="remove-item" data-id="${item.id}">Remove</span>
+                </div>
                 </div>
             `;
             
