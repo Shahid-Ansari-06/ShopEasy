@@ -3,18 +3,25 @@ const products = [
     {
         id: 1,
         title: "Wireless Bluetooth Headphones",
+        description: "Detailed product description goes here. This could include features, specifications, and other details about the product.",
         price: 99.99,
         originalPrice: 129.99,
         discount: "25% off",
         image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+        additionalImages:[
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+        ],
         rating: 4.5,
         reviews: 125,
+        inStock: true,
+        sku : 'SP001',
+        brand: 'Boat',
         badge: "Popular",
         category: "electronics",
         featured: true,
         trending: false,
         deal: false,
-        link: "#"
+        link: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
     },
     {
         id: 2,
@@ -183,9 +190,6 @@ const products = [
 // Cart Data
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Wishlist Data
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-
 // DOM Elements
 const productGrid = document.getElementById('product-grid');
 const featuredGrid = document.getElementById('featured-grid');
@@ -195,18 +199,12 @@ const recommendedGrid = document.getElementById('recommended-grid');
 const searchResults = document.getElementById('search-results');
 const searchResultsGrid = document.getElementById('search-results-grid');
 const cartBtn = document.getElementById('cart-btn');
-const wishlistLink = document.querySelector('.wishlist-link');
 const cartModal = document.getElementById('cart-modal');
-const wishlistModal = document.getElementById('wishlist-modal');
-const productViewModal = document.getElementById('product-view-modal');
 const closeBtn = document.querySelector('.close-btn');
-const closeWishlist = document.querySelector('.close-wishlist');
 const closeProductView = document.querySelector('.close-product-view');
 const cartItems = document.getElementById('cart-items');
-const wishlistItems = document.getElementById('wishlist-items');
 const productViewContainer = document.getElementById('product-view-container');
 const cartCount = document.getElementById('cart-count');
-const wishlistCount = document.getElementById('wishlist-count');
 const cartSubtotal = document.getElementById('cart-subtotal');
 const cartTotal = document.getElementById('cart-total');
 const searchInput = document.getElementById('search-input');
@@ -217,33 +215,29 @@ const viewAllTrending = document.getElementById('view-all-trending');
 const viewAllRecommended = document.getElementById('view-all-recommended');
 
 
-// Display Products with cart icon and buy now button
+// Display Products
 function displayProducts(productsToDisplay, gridElement = productGrid, maxProducts = 10) {
+  if (!productsToDisplay?.length) return;
   gridElement.innerHTML = '';
-  
-  // Limit the number of products if maxProducts is provided
+
   const products = maxProducts ? productsToDisplay.slice(0, maxProducts) : productsToDisplay;
 
   products.forEach(product => {
-      // Skip invalid products
-      if (!product || !product.id) return;
-
-      const isInWishlist = wishlist.some(item => item.id === product.id);
       const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
       
       const productCard = document.createElement('div');
       productCard.className = 'product-card';
       productCard.innerHTML = `
           <div class="product-image">
-              <img src="${product.image}" alt="${product.title}">
+              <img src="${product.image}" alt="${product.title}" loading="lazy">
               ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
           </div>
           <div class="product-info">
               <h3 class="product-title">${product.title}</h3>
               <div class="product-price">
-                  <span class="current-price">$${product.price.toFixed(2)}</span>
-                  ${product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
-                  <h4 class="discounts">${product.discount}</h4>
+                  <span class="current-price">$${Number(product.price).toFixed(2)}</span>
+                  ${product.originalPrice ? `<span class="original-price">$${Number(product.originalPrice).toFixed(2)}</span>` : ''}
+                  <h4 class="discount">${product.discount}</h4>
               </div>
               <div class="product-rating">
                   <span class="stars">${stars}</span>
@@ -254,12 +248,52 @@ function displayProducts(productsToDisplay, gridElement = productGrid, maxProduc
                   <button class="cart-icon-btn" data-id="${product.id}">
                       <i class="fas fa-shopping-cart"></i>
                   </button>
-                  <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" data-id="${product.id}">
-                      <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                  <button class="share-btn" data-id="${product.id}">
+                      <i class="fas fa-share-alt"></i>
                   </button>
               </div>
           </div>
       `;
+
+      productGrid.addEventListener('click', (e) => {
+        const shareBtn = e.target.closest('.share-btn');
+      
+        if (shareBtn) {
+          const productId = shareBtn.dataset.id;
+          const product = productsToDisplay.find(p => p.id.toString() === productId);
+          if (product) shareProduct(product);
+        }
+      });
+      
+      // Updated share function
+      function shareProduct(product) {
+        const shareData = {
+          url: product.link || window.location.href,
+        };
+      
+        if (navigator.share) {
+          navigator.share(shareData).catch(err => {
+            console.error("Sharing failed:", err);
+            fallbackShare(shareData);
+          });
+        } else {
+          fallbackShare(shareData);
+        }
+      }
+      
+      // Fallback: Copy link to clipboard
+      function fallbackShare(shareData) {
+        navigator.clipboard.writeText(shareData.url).then(() => {
+        });
+      }
+
+      // Add click event to show product view
+      productCard.addEventListener('click', (e) => {
+          // Don't trigger if clicking on buttons or links
+          if (!e.target.closest('.product-actions a, .product-actions button')) {
+              showProductView(product);
+          }
+      });
       
       gridElement.appendChild(productCard);
   });
@@ -267,10 +301,6 @@ function displayProducts(productsToDisplay, gridElement = productGrid, maxProduc
   // Add event listeners
   document.querySelectorAll('.cart-icon-btn').forEach(button => {
       button.addEventListener('click', addToCart);
-  });
-  
-  document.querySelectorAll('.wishlist-btn').forEach(button => {
-      button.addEventListener('click', toggleWishlist);
   });
 }
 
@@ -338,6 +368,218 @@ function sortProducts() {
     
     displayProducts(productsToSort);
 }
+
+// Product View Functions
+function showProductView(product) {
+  const overlay = document.getElementById('productViewOverlay');
+  
+  // Store original price for coupon calculations
+  product.originalPriceForCoupon = product.price;
+  product.currentDiscount = 0;
+  
+  // Set product data
+  document.getElementById('productViewTitle').textContent = product.title;
+  document.getElementById('productViewMainImage').src = product.image;
+  updatePriceDisplay(product.price, product.originalPrice);
+  
+  if (product.originalPrice) {
+    document.getElementById('productViewOriginalPrice').textContent = `$${product.originalPrice.toFixed(2)}`;
+  } else {
+    document.getElementById('productViewOriginalPrice').textContent = '';
+  }
+  
+  if (product.discount) {
+    document.getElementById('productViewDiscount').textContent = product.discount;
+  } else {
+    document.getElementById('productViewDiscount').textContent = '';
+  }
+  
+  // Set Buy Now button link
+  const buyNowBtn = document.getElementById('buyNowProductView');
+  buyNowBtn.dataset.link = product.link;
+  
+  // Set rating
+  const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
+  document.getElementById('productViewStars').textContent = stars;
+  document.getElementById('productViewReviews').textContent = `(${product.reviews} reviews)`;
+  
+  // Set description (fallback to empty string if not provided)
+  document.getElementById('productViewDescription').textContent = product.description || '';
+  
+  // Set meta data (if available in product object)
+  if (product.sku) {
+    document.getElementById('productViewSKU').textContent = product.sku;
+  }
+  if (product.category) {
+    document.getElementById('productViewCategory').textContent = product.category;
+  }
+  if (product.brand) {
+    document.getElementById('productViewBrand').textContent = product.brand;
+  }
+  
+  // Set stock status
+  const stockElement = document.getElementById('productViewStock');
+  if (product.inStock) {
+    stockElement.textContent = 'In Stock';
+    stockElement.classList.add('in-stock');
+    stockElement.classList.remove('out-of-stock');
+  } else {
+    stockElement.textContent = 'Out of Stock';
+    stockElement.classList.add('out-of-stock');
+    stockElement.classList.remove('in-stock');
+  }
+  
+  // Clear and set thumbnails
+  const thumbnailContainer = document.querySelector('.thumbnail-container');
+  thumbnailContainer.innerHTML = '';
+  
+  // Add main image as first thumbnail
+  addThumbnail(product.image, thumbnailContainer);
+  
+  // Add additional images if available
+  if (product.additionalImages && product.additionalImages.length > 0) {
+    product.additionalImages.forEach(img => {
+      addThumbnail(img, thumbnailContainer);
+    });
+  }
+  
+  // Reset coupon field
+  document.getElementById('couponCodeInput').value = '';
+  document.getElementById('couponMessage').textContent = '';
+  document.getElementById('couponMessage').className = '';
+  
+  // Show the overlay
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Add event listeners
+  setupProductViewEvents(product);
+}
+
+function addThumbnail(imgSrc, container) {
+  const img = document.createElement('img');
+  img.src = imgSrc;
+  img.addEventListener('click', () => {
+    document.getElementById('productViewMainImage').src = imgSrc;
+  });
+  container.appendChild(img);
+}
+
+function setupProductViewEvents(product) {
+  const overlay = document.getElementById('productViewOverlay');
+  const closeBtn = document.getElementById('closeProductView');
+  const addToCartBtn = document.getElementById('addToCartProductView');
+  const buyNowBtn = document.getElementById('buyNowProductView');
+  const minusBtn = document.querySelector('.quantity-btn.minus');
+  const plusBtn = document.querySelector('.quantity-btn.plus');
+  const quantityInput = document.querySelector('.quantity-input');
+  
+  // Close button
+  closeBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  });
+  
+  // Overlay click (outside content)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // Add to Cart button in Product View
+  addToCartBtn.addEventListener('click', () => {
+    const existingItem = cart.find(item => item.id === product.id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        ...product,
+        quantity: 1
+      });
+    }
+
+    saveCart();
+    updateCart();
+    showCartNotification();
+  });
+  
+  // Buy Now button - opens product link in new tab
+  buyNowBtn.addEventListener('click', () => {
+    window.open(buyNowBtn.dataset.link, '_blank');
+  });
+  
+  // Quantity buttons
+  minusBtn.addEventListener('click', () => {
+    const current = parseInt(quantityInput.value) || 1;
+    if (current > 1) {
+      quantityInput.value = current - 1;
+    }
+  });
+  
+  plusBtn.addEventListener('click', () => {
+    const current = parseInt(quantityInput.value) || 1;
+    quantityInput.value = current + 1;
+  });
+  
+  // Quantity input validation
+  quantityInput.addEventListener('change', () => {
+    if (parseInt(quantityInput.value) < 1) {
+      quantityInput.value = 1;
+    }
+  });
+  
+  // Coupon code functionality
+  const applyCouponBtn = document.getElementById('applyCouponBtn');
+  const couponCodeInput = document.getElementById('couponCodeInput');
+  const couponMessage = document.getElementById('couponMessage');
+  
+  applyCouponBtn.addEventListener('click', () => {
+    const couponCode = couponCodeInput.value.trim();
+    
+    if (couponCode === 'SHAHID06') {
+      // Apply 50% discount
+      product.price = product.originalPriceForCoupon * 0.5;
+      product.currentDiscount = 0.5;
+      updatePriceDisplay(product.price, product.originalPriceForCoupon);
+      couponMessage.textContent = '50% discount applied!';
+      couponMessage.className = 'success';
+    } else if (couponCode === '') {
+      couponMessage.textContent = 'Please enter a coupon code';
+      couponMessage.className = 'error';
+    } else {
+      // Reset to original price if wrong coupon
+      product.price = product.originalPriceForCoupon;
+      product.currentDiscount = 0;
+      updatePriceDisplay(product.price, product.originalPriceForCoupon);
+      couponMessage.textContent = 'Invalid coupon code';
+      couponMessage.className = 'error';
+    }
+  });
+  
+  // Allow pressing Enter to apply coupon
+  couponCodeInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      applyCouponBtn.click();
+    }
+  });
+}
+
+function updatePriceDisplay(currentPrice, originalPrice) {
+  document.getElementById('productViewPrice').textContent = `$${currentPrice.toFixed(2)}`;
+  
+  if (originalPrice) {
+    document.getElementById('productViewOriginalPrice').textContent = `$${originalPrice.toFixed(2)}`;
+  } else {
+    document.getElementById('productViewOriginalPrice').textContent = '';
+  }
+}
+
+// Initialize the product grid when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+});
 
 // For Carousel
 const carousel = document.querySelector('.carousel');
@@ -674,27 +916,27 @@ function setupResultItemListeners() {
       const productId = item.dataset.id;
       const product = products.find(p => p.id == productId);
       addToRecentSearches(product.title);
-      window.location.href = product.link || '#';
+      showProductView(product); // Open product modal
     });
   });
-  
+
   document.querySelectorAll('.view-all-results').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const category = btn.dataset.category;
       const query = btn.dataset.query;
-      
+
       // Filter products by category and query
       const filteredProducts = products.filter(p => 
         p.category.toLowerCase() === category && 
         (p.title.toLowerCase().includes(query) || 
          p.category.toLowerCase().includes(query))
       );
-      
+
       // Display in main grid
       displayProducts(filteredProducts);
       liveResults.style.display = 'none';
-      
+
       // Scroll to products
       document.querySelector('.products-container').scrollIntoView({
         behavior: 'smooth'
@@ -725,39 +967,6 @@ function addToCart(e) {
     saveCart();
     updateCart();
     showCartNotification();
-}
-
-// Toggle Wishlist
-function toggleWishlist(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const productId = parseInt(e.currentTarget.getAttribute('data-id'));
-    const product = products.find(p => p.id === productId);
-    
-    const index = wishlist.findIndex(item => item.id === productId);
-    
-    if (index === -1) {
-        // Add to wishlist
-        wishlist.push(product);
-        e.currentTarget.classList.add('active');
-        e.currentTarget.innerHTML = '<i class="fas fa-heart"></i>';
-    } else {
-        // Remove from wishlist
-        wishlist.splice(index, 1);
-        e.currentTarget.classList.remove('active');
-        e.currentTarget.innerHTML = '<i class="far fa-heart"></i>';
-    }
-    
-    saveWishlist();
-    updateWishlistCount();
-    
-    // Update wishlist buttons in all product displays
-    document.querySelectorAll(`.wishlist-btn[data-id="${productId}"]`).forEach(btn => {
-        btn.classList.toggle('active');
-        btn.innerHTML = btn.classList.contains('active') ? 
-            '<i class="fas fa-heart"></i>' : 
-            '<i class="far fa-heart"></i>';
-    });
 }
 
 // Update Cart
@@ -822,92 +1031,10 @@ function updateCart() {
     updateCartCount();
 }
 
-// Update Wishlist
-function updateWishlist() {
-    wishlistItems.innerHTML = '';
-    
-    if (wishlist.length === 0) {
-        wishlistItems.innerHTML = '<p class="empty-wishlist">Your wishlist is empty</p>';
-    } else {
-        wishlist.forEach(item => {
-            const wishlistItem = document.createElement('div');
-            wishlistItem.className = 'wishlist-item';
-            
-            wishlistItem.innerHTML = `
-                <div class="wishlist-item-img">
-                    <img src="${item.image}" alt="${item.title}">
-                </div>
-                <div class="wishlist-item-details">
-                    <h4 class="wishlist-item-title">${item.title}</h4>
-                    <p class="wishlist-item-price">$${item.price.toFixed(2)}</p>
-                    <div class="wishlist-item-actions">
-                        <button class="add-to-cart-from-wishlist" data-id="${item.id}">Add to Cart</button>
-                        <span class="remove-from-wishlist" data-id="${item.id}">Remove</span>
-                    </div>
-                </div>
-            `;
-            
-            wishlistItems.appendChild(wishlistItem);
-        });
-        
-        // Add event listeners to wishlist buttons
-        
-        document.querySelectorAll('.add-to-cart-from-wishlist').forEach(button => {
-            button.addEventListener('click', addToCartFromWishlist);
-        });
-        
-        document.querySelectorAll('.remove-from-wishlist').forEach(button => {
-            button.addEventListener('click', removeFromWishlist);
-        });
-    }
-}
-
-// Add to cart from wishlist
-function addToCartFromWishlist(e) {
-    const productId = parseInt(e.currentTarget.getAttribute('data-id'));
-    const product = wishlist.find(p => p.id === productId);
-    
-    const existingItem = cart.find(item => item.id === productId);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            ...product,
-            quantity: 1
-        });
-    }
-    
-    saveCart();
-    updateCart();
-    showCartNotification();
-}
-
-// Remove from wishlist
-function removeFromWishlist(e) {
-    const productId = parseInt(e.currentTarget.getAttribute('data-id'));
-    wishlist = wishlist.filter(item => item.id !== productId);
-    
-    // Update wishlist buttons in all product displays
-    document.querySelectorAll(`.wishlist-btn[data-id="${productId}"]`).forEach(btn => {
-        btn.classList.remove('active');
-        btn.innerHTML = '<i class="far fa-heart"></i> Wishlist';
-    });
-    
-    saveWishlist();
-    updateWishlist();
-}
-
 // Update Cart Count
 function updateCartCount() {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = count;
-}
-
-// Update Wishlist Count
-function updateWishlistCount() {
-    const count = wishlist.length;
-    wishlistCount.textContent = count;
 }
 
 // Decrease Quantity
@@ -967,11 +1094,6 @@ function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-// Save Wishlist to LocalStorage
-function saveWishlist() {
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-}
-
 // Open Cart Modal
 function openCartModal(e) {
     e.preventDefault();
@@ -982,20 +1104,6 @@ function openCartModal(e) {
 // Close Cart Modal
 function closeCartModal() {
     cartModal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// Open Wishlist Modal
-function openWishlistModal(e) {
-    e.preventDefault();
-    wishlistModal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    updateWishlist();
-}
-
-// Close Wishlist Modal
-function closeWishlistModal() {
-    wishlistModal.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
 
@@ -1029,9 +1137,7 @@ function init() {
     
     // Update cart and wishlist from localStorage
     updateCart();
-    updateWishlist();
     updateCartCount();
-    updateWishlistCount();
     
     // Event listeners
     searchBtn.addEventListener('click', searchProducts);
@@ -1043,10 +1149,7 @@ function init() {
     
     cartBtn.addEventListener('click', openCartModal);
     closeBtn.addEventListener('click', closeCartModal);
-    
-    wishlistLink.addEventListener('click', openWishlistModal);
-    closeWishlist.addEventListener('click', closeWishlistModal);
-            
+                
     viewAllTrending.addEventListener('click', (e) => {
         e.preventDefault();
         displayAllTrendingProducts();
@@ -1060,7 +1163,6 @@ function init() {
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === cartModal) closeCartModal();
-        if (e.target === wishlistModal) closeWishlistModal();
     });
     
     // Countdown timer
