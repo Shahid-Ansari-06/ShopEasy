@@ -17,7 +17,7 @@
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="Search products...">
                 <button id="search-btn"><i class="fas fa-search"></i></button>
-                <button id="clear-search-btn" style="display:none; margin-left: -3px;"><i class="fas fa-times"></i></button>
+                <button id="clear-search-btn" style="display:none; margin-left: -4px;"><i class="fas fa-times"></i></button>
               </div>
               
               <div class="live-search-results" id="live-search-results">
@@ -129,6 +129,77 @@
             </section>
         </section>
     </main>
+
+    <!-- Product View Modal -->
+    <div id="productViewOverlay" class="product-view-overlay">
+        <div class="product-view-container">
+          <button id="closeProductView" class="close-product-view">&times;</button>
+          
+          <div class="product-view-content">
+            <div class="product-view-images">
+              <div class="main-image">
+                <img id="productViewMainImage" src="" alt="">
+              </div>
+              <div class="thumbnail-container">
+                <!-- Thumbnails will be added dynamically -->
+              </div>
+            </div>
+            
+            <div class="product-view-details">
+              <h1 id="productViewTitle"></h1>
+              <div class="product-view-rating">
+                <span id="productViewStars"></span>
+                <span id="productViewReviews"></span>
+                <span id="productViewStock" class="stock-status"></span>
+              </div>
+              
+              <div class="product-view-pricing">
+                <span id="productViewPrice" class="current-price"></span>
+                <span id="productViewOriginalPrice" class="original-price"></span>
+                <span id="productViewDiscount" class="discount-badge"></span>
+              </div>
+              
+              <div class="product-view-description">
+                <p id="productViewDescription"></p>
+              </div>
+              <div class="product-view-coupon">
+                <input type="text" id="couponCodeInput" placeholder="Enter coupon code">
+                <button id="applyCouponBtn">Apply</button>
+                <span id="couponMessage"></span>
+              </div>
+              
+              <div class="product-view-actions">
+                <div class="quantity-selector quantity-selector1">
+                  <button class="quantity-btn quantity-btn1 minus">-</button>
+                  <input type="number" value="1" min="1" class="quantity-input quantity-input1">
+                  <button class="quantity-btn quantity-btn1 plus">+</button>
+                </div>
+                <button id="addToCartProductView" class="add-to-cart-btn">
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+                <button id="buyNowProductView" class="buy-now-btn">
+                  <i class="fas fa-bolt"></i> Buy Now
+                </button>
+              </div>
+                          
+              <div class="product-view-meta">
+                <div class="meta-item">
+                  <span class="meta-label">SKU:</span>
+                  <span id="productViewSKU" class="meta-value"></span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Category:</span>
+                  <span id="productViewCategory" class="meta-value"></span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Brand:</span>
+                  <span id="productViewBrand" class="meta-value"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- Shopping Cart Modal -->
     <div class="cart-modal" id="cart-modal">
