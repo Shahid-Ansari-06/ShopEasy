@@ -324,7 +324,7 @@ button {
     margin-right: 5px;
 }
 
-#cart-count, #wishlist-count{
+#cart-count {
     background-color: var(--danger-color);
     color: white;
     border-radius: 50%;
@@ -434,11 +434,11 @@ button {
 
 /* Categories Styles */
 .top-categories {
-    background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    padding: 20px;
-    margin-bottom: 19px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  margin-bottom: 27.5px;
 }
 
 .top-categories h2 {
@@ -449,6 +449,14 @@ button {
 }
 
 @media (max-width: 768px) {
+  .top-categories {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 20px;
+    margin-bottom: 19px;
+  }
+
   .categories {
     display: flex;
     flex-wrap: nowrap;
