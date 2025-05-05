@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopEasy - Your Online Store</title>
+    <link rel="canonical" href="https://shop-easy06.netlify.app/index.html" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,8 +26,8 @@
               </div>
             <nav class="nav">
                 <ul>
-                    <li><a href="about-us.html" class="account-link"><i class="fas fa-user"></i> <span class="nav-text">About Us</span></a></li>
-                    <li><a href="#" class="wishlist-link"><i class="fas fa-heart"></i> <span class="nav-text">Wishlist</span> <span id="wishlist-count">0</span></a></li>
+                    <li><a href="/about-us"><i class="fas fa-user"></i> <span class="nav-text">About Us</span></a></li>
+                    <li><a href="/coupons"><i class="fas fa-gift"></i> <span class="nav-text">Coupons</span></a></li>
                     <li><a href="#" id="cart-btn"><i class="fas fa-shopping-cart"></i> <span class="nav-text">Cart</span> <span id="cart-count">0</span></a></li>
                 </ul>
             </nav>
@@ -62,6 +63,45 @@
     <main class="main">
         <!-- Product Sections -->
         <section class="products-container">
+            <!-- Categories -->
+            <section class="top-categories product">
+                <h2>Top Categories</h2>
+                <div class="categories">
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/banking-finance-offers-4684-17455848681.png" alt="Credit Cards">
+                    <p>Credit Cards</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/biggest-sales-5257-17352940050.png" alt="Biggest Sales">
+                    <p>Biggest Sales</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/loans-offers-5376-17455651671.png" alt="Loans">
+                    <p>Loans</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/fashion-offers-4199-17352129510.png" alt="Fashion">
+                    <p>Fashion</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/health-medicine-offers-4203-17352130130.png" alt="Pharmacy">
+                    <p>Pharmacy</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/mobiles-phones-offers-4200-17352851830.png" alt="Mobiles">
+                    <p>Mobiles</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/electronics-offers-4205-17352127230.png" alt="Electronics">
+                    <p>Electronics</p>
+                  </div>
+                  <div class="category">
+                    <img src="https://asset20.ckassets.com/resources/image/category/new-on-ck-4908-17352852140.png" alt="New on CashKaro">
+                    <p>New on<br>CashKaro</p>
+                  </div>
+                </div>
+              </section>
+
             <!-- Featured Products -->
             <section class="products">
                 <div class="products-header">
@@ -88,9 +128,9 @@
                   <a href="#featured" class="view-all">View All</a>
                 </div>
                 <div class="product-grid" id="featured-grid">
-                  <!-- Products will be dynamically inserted here -->
+                  <!-- Featured Products will be dynamically inserted here -->
                 </div>
-              </section>
+            </section>
 
             <!-- Trending Now -->
             <section class="products">
@@ -228,19 +268,6 @@
         </div>
     </div>
 
-    <!-- Wishlist Modal -->
-    <div class="wishlist-modal" id="wishlist-modal">
-        <div class="wishlist-content">
-            <div class="wishlist-header">
-                <h3>Your Wishlist</h3>
-                <span class="close-wishlist">&times;</span>
-            </div>
-            <div class="wishlist-items" id="wishlist-items">
-                <!-- Wishlist items will be dynamically inserted here -->
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -280,6 +307,7 @@
             <p>&copy; 2023 ShopEasy. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="script.js" defer></script>
 </body>
 </html>
